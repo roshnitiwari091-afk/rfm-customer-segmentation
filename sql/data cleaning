@@ -1,33 +1,7 @@
-SELECT 
-    c7 AS CustomerID,
-    
-    COUNT(DISTINCT c1) AS frequency,
-    SUM(c4 * c6) AS monetary,
-    
-    JULIANDAY((SELECT MAX(c5) FROM RETAIL_CLEAN)) 
-    - JULIANDAY(MAX(c5)) AS recency,
-
-    -- Recency Score (lower is better)
-    CASE 
-        WHEN JULIANDAY((SELECT MAX(c5) FROM RETAIL_CLEAN)) - JULIANDAY(MAX(c5)) <= 30 THEN 3
-        WHEN JULIANDAY((SELECT MAX(c5) FROM RETAIL_CLEAN)) - JULIANDAY(MAX(c5)) <= 90 THEN 2
-        ELSE 1
-    END AS r_score,
-
-    -- Frequency Score
-    CASE 
-        WHEN COUNT(DISTINCT c1) >= 10 THEN 3
-        WHEN COUNT(DISTINCT c1) >= 5 THEN 2
-        ELSE 1
-    END AS f_score,
-
-    -- Monetary Score
-    CASE 
-        WHEN SUM(c4 * c6) >= 1000 THEN 3
-        WHEN SUM(c4 * c6) >= 500 THEN 2
-        ELSE 1
-    END AS m_score
-
-FROM RETAIL_CLEAN
-WHERE c4 > 0 AND c6 > 0
-GROUP BY c7;
+SELECT*
+FROM OnlineRetail
+WHERE c1 LIKE'C%'
+LIMIT 5;
+CREATE TABLE RETAIL_CLEAN AS SELECT * FROM OnlineRetail WHERE c1 NOT LIKE 'C%';
+CREATE TABLE retail_final AS SELECT * from RETAIL_CLEAN WHERE c4>0 AND c6>0;
+ 
